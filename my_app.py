@@ -1,31 +1,60 @@
-from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QPushButton, QLineEdit, QVBoxLayout, QHBoxLayout
-from PyQt5.QtCore import Qt
-
-app = QApplication([])
-#первое окно
-win = QWidget()
-win.setWindowTitle('окно 1')
-win.resize(1920, 1080)
-win.show()
-#скрытие первого окна
-def dasd():
-    win.hide()
-    win2.show()
-#первое окно 2
-label1 = QLabel('Добро пожаловать в программу по определению состояния здоровья!')
-label2 = QLabel('Данное приложение позволит вам с помощью теста Руфье провести первичную диагностику вашего здоровья.\n'
-                   'Проба Руфье представляет собой нагрузочный комплекс, предназначенный для оценки работоспособности сердца при физической нагрузке.\n'
-                   'У испытуемого, находящегося в положении лёжа на спине в течение 5 мин, определяют частоту пульса за 15 секунд;\n'
-                   'затем в течение 45 секунд испытуемый выполняет 30 приседаний.\n'
-                   'После окончания нагрузки испытуемый ложится, и у него вновь подсчитывается число пульсаций за первые 15 секунд,\n'
-                   'а потом — за последние 15 секунд первой минуты периода восстановления.\n'
-                   'Важно! Если в процессе проведения испытания вы почувствуете себя плохо (появится головокружение, шум в\n'
-                   'ушах, сильная одышка и др.), то тест необходимо прервать и обратиться к врачу.')
-button1 = QPushButton('Начать')
-v_line1 = QVBoxLayout()
-v_line1.addWidget(label1, alignment=Qt.AlignCenter)
-v_line1.addWidget(label2, alignment=Qt.AlignCenter)
-v_line1.addWidget(button1, alignment=Qt.AlignCenter)
-win.setLayout(v_line1)
-button1.clicked.connect(dasd)
-app.exec_()
+from PyQt5.QtCore import Qt, QTimer, QTime, QLocale
+from PyQt5.QtGui import QDoubleValidator, QIntValidator, QFont # проверка типов вводимых значений
+from PyQt5.QtWidgets import (
+       QApplication, QWidget,
+       QHBoxLayout, QVBoxLayout, QGridLayout,
+       QGroupBox, QRadioButton,
+       QPushButton, QLabel, QListWidget, QLineEdit)
+ 
+from instr import *
+from second_win import *
+     
+class MainWin(QWidget):
+   def __init__(self):
+       ''' окно, в котором располагается приветствие '''
+       super().__init__()
+ 
+       #устанавливает, как будет выглядеть окно (надпись, размер, место)
+       self.set_appear()
+ 
+       # создаём и настраиваем графические элементы:
+       self.initUI()
+ 
+       #устанавливает связи между элементами
+       self.connects()
+ 
+       # старт:
+       self.show()
+ 
+   def initUI(self):
+       ''' создаёт графические элементы '''
+       self.btn_next = QPushButton(txt_next)
+       self.hello_text = QLabel(txt_hello)
+       self.instruction = QLabel(txt_instruction)
+ 
+       self.layout = QVBoxLayout()
+       self.layout.addWidget(self.hello_text, alignment = Qt.AlignLeft)
+       self.layout.addWidget(self.instruction, alignment = Qt.AlignLeft)
+       self.layout.addWidget(self.btn_next, alignment = Qt.AlignCenter)         
+       self.setLayout(self.layout)
+ 
+  
+   def next_click(self):
+       self.tw = TestWin()
+       self.hide()
+ 
+   def connects(self):
+       self.btn_next.clicked.connect(self.next_click)
+ 
+   ''' устанавливает, как будет выглядеть окно (надпись, размер, место) '''
+   def set_appear(self):
+       self.setWindowTitle(txt_title)
+       self.resize(win_width, win_height)
+       self.move(win_x, win_y)
+ 
+def main():
+   app = QApplication([])
+   mw = MainWin()
+   app.exec_()
+ 
+main()
